@@ -2,76 +2,134 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Calculatrice_De_Dorcas.Pages.MainPage"
-             Title="NOVA_CALCULATOR"
-             BackgroundColor="#1C1C1E">
+             Title="NOVA_CALCULATOR">
+
+    <!-- Fond : dégradé nuit violette → aubergine -->
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#120626" Offset="0.0" />
+            <GradientStop Color="#2A0E4D" Offset="0.55" />
+            <GradientStop Color="#3B1466" Offset="1.0" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
 
     <ContentPage.Resources>
-        <!-- Style de base commun à toutes les touches -->
+
+        <!-- ============ PINCEAUX (dégradés réutilisables) ============ -->
+        <LinearGradientBrush x:Key="CoralBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#FF5C7A" Offset="0.0" />
+            <GradientStop Color="#FF9A5C" Offset="1.0" />
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="GoldBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#FFD86B" Offset="0.0" />
+            <GradientStop Color="#FFB020" Offset="1.0" />
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="MintBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#7CFFD8" Offset="0.0" />
+            <GradientStop Color="#3FD6B0" Offset="1.0" />
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="GlassBrush" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#33FFFFFF" Offset="0.0" />
+            <GradientStop Color="#14FFFFFF" Offset="1.0" />
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="PanelStrokeBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#FFD86B" Offset="0.0" />
+            <GradientStop Color="#FF5C7A" Offset="0.5" />
+            <GradientStop Color="#7CFFD8" Offset="1.0" />
+        </LinearGradientBrush>
+
+        <!-- ============ STYLES DES TOUCHES (police script Lobster) ============ -->
         <Style x:Key="KeyBase" TargetType="Button">
-            <Setter Property="FontSize" Value="26" />
-            <Setter Property="FontAttributes" Value="Bold" />
-            <Setter Property="CornerRadius" Value="18" />
+            <Setter Property="FontFamily" Value="Lobster" />
+            <Setter Property="FontSize" Value="30" />
+            <Setter Property="CornerRadius" Value="26" />
             <Setter Property="Padding" Value="0" />
-            <Setter Property="Margin" Value="4" />
+            <Setter Property="Margin" Value="5" />
             <Setter Property="MinimumHeightRequest" Value="0" />
             <Setter Property="MinimumWidthRequest" Value="0" />
             <Setter Property="HorizontalOptions" Value="Fill" />
             <Setter Property="VerticalOptions" Value="Fill" />
         </Style>
 
+        <!-- Chiffres : verre dépoli translucide + liseré clair -->
         <Style x:Key="DigitKey" TargetType="Button" BasedOn="{StaticResource KeyBase}">
-            <Setter Property="BackgroundColor" Value="#3A3A3C" />
-            <Setter Property="TextColor" Value="White" />
+            <Setter Property="Background" Value="{StaticResource GlassBrush}" />
+            <Setter Property="BorderColor" Value="#40FFFFFF" />
+            <Setter Property="BorderWidth" Value="1" />
+            <Setter Property="TextColor" Value="#FFF4E0" />
         </Style>
 
+        <!-- Fonctions (AC, ⌫, %) : menthe -->
         <Style x:Key="FunctionKey" TargetType="Button" BasedOn="{StaticResource KeyBase}">
-            <Setter Property="BackgroundColor" Value="#A5A5A5" />
-            <Setter Property="TextColor" Value="Black" />
+            <Setter Property="Background" Value="{StaticResource MintBrush}" />
+            <Setter Property="TextColor" Value="#0E2A24" />
         </Style>
 
+        <!-- Opérateurs : corail → ambre -->
         <Style x:Key="OperatorKey" TargetType="Button" BasedOn="{StaticResource KeyBase}">
-            <Setter Property="BackgroundColor" Value="#FF9F0A" />
+            <Setter Property="Background" Value="{StaticResource CoralBrush}" />
             <Setter Property="TextColor" Value="White" />
-            <Setter Property="FontSize" Value="30" />
+            <Setter Property="FontSize" Value="34" />
+        </Style>
+
+        <!-- Touche « = » : or, la vedette du clavier -->
+        <Style x:Key="EqualsKey" TargetType="Button" BasedOn="{StaticResource KeyBase}">
+            <Setter Property="Background" Value="{StaticResource GoldBrush}" />
+            <Setter Property="TextColor" Value="#3B1466" />
+            <Setter Property="FontSize" Value="38" />
         </Style>
     </ContentPage.Resources>
 
-    <!-- LAYOUT 1 : Grid racine (2 lignes en portrait, 2 colonnes en paysage — géré dans le code-behind) -->
-    <Grid x:Name="RootGrid" Padding="10" RowSpacing="8" ColumnSpacing="8">
+    <!-- LAYOUT 1 : Grid racine (portrait : 2 lignes / paysage : 2 colonnes — géré dans le code-behind) -->
+    <Grid x:Name="RootGrid" Padding="12" RowSpacing="10" ColumnSpacing="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="2*" />
             <RowDefinition Height="5*" />
         </Grid.RowDefinitions>
 
-        <!-- LAYOUT 2 : Border — panneau d'affichage arrondi -->
+        <!-- LAYOUT 2 : Border — panneau d'affichage « verre » au liseré dégradé -->
         <Border x:Name="DisplayPanel"
                 Grid.Row="0" Grid.Column="0"
-                BackgroundColor="#2C2C2E"
-                Stroke="#3A3A3C"
-                StrokeThickness="1"
-                Padding="14,10">
+                Background="{StaticResource GlassBrush}"
+                Stroke="{StaticResource PanelStrokeBrush}"
+                StrokeThickness="2"
+                Padding="16,10">
             <Border.StrokeShape>
-                <RoundRectangle CornerRadius="20" />
+                <RoundRectangle CornerRadius="30,30,30,8" />
             </Border.StrokeShape>
 
-            <!-- LAYOUT 3 : VerticalStackLayout — empile en-tête, opération, résultat -->
-            <VerticalStackLayout VerticalOptions="End" Spacing="2">
+            <!-- LAYOUT 3 : VerticalStackLayout — en-tête, opération, résultat -->
+            <VerticalStackLayout VerticalOptions="End" Spacing="0">
 
-                <!-- LAYOUT 4 : HorizontalStackLayout — barre d'état (titre + statut) -->
-                <HorizontalStackLayout Spacing="10" HorizontalOptions="End">
-                    <Label Text="CALCULATRICE" FontSize="11" TextColor="#8E8E93" VerticalOptions="Center" />
-                    <Label x:Name="StatusLabel" Text="● Prêt" FontSize="11" TextColor="#30D158" VerticalOptions="Center" />
+                <!-- LAYOUT 4 : HorizontalStackLayout — signature « Nova » + statut -->
+                <HorizontalStackLayout Spacing="12" HorizontalOptions="End">
+                    <Label Text="Nova ✦ calculator"
+                           FontFamily="Pacifico"
+                           FontSize="16"
+                           TextColor="#FFD86B"
+                           VerticalOptions="Center" />
+                    <Label x:Name="StatusLabel"
+                           Text="● Prêt"
+                           FontFamily="Pacifico"
+                           FontSize="12"
+                           TextColor="#7CFFD8"
+                           VerticalOptions="Center" />
                 </HorizontalStackLayout>
 
-                <!-- LAYOUT 5 : ScrollView horizontal — l'opération en cours ne déborde jamais -->
+                <!-- LAYOUT 5 : ScrollView horizontal — l'opération ne déborde jamais -->
                 <ScrollView x:Name="ExpressionScroll"
                             Orientation="Horizontal"
                             HorizontalScrollBarVisibility="Never"
                             HorizontalOptions="End">
                     <Label x:Name="ExpressionLabel"
                            Text=""
+                           FontFamily="Pacifico"
                            FontSize="22"
-                           TextColor="#8E8E93"
+                           TextColor="#C9A8FF"
                            LineBreakMode="NoWrap"
                            HorizontalTextAlignment="End" />
                 </ScrollView>
@@ -82,16 +140,16 @@
                             HorizontalOptions="End">
                     <Label x:Name="ResultLabel"
                            Text="0"
-                           FontSize="56"
-                           FontAttributes="Bold"
-                           TextColor="White"
+                           FontFamily="Lobster"
+                           FontSize="58"
+                           TextColor="#FFF4E0"
                            LineBreakMode="NoWrap"
                            HorizontalTextAlignment="End" />
                 </ScrollView>
             </VerticalStackLayout>
         </Border>
 
-        <!-- Clavier : Grid 5 lignes x 4 colonnes, toutes "*" pour s'adapter à tout écran -->
+        <!-- Clavier : Grid 5 lignes x 4 colonnes en "*" pour s'adapter à tout écran -->
         <Grid x:Name="KeypadGrid"
               Grid.Row="1" Grid.Column="0"
               RowSpacing="0" ColumnSpacing="0">
@@ -137,7 +195,7 @@
             <Button Grid.Row="4" Grid.Column="0" Text="±" Style="{StaticResource DigitKey}" Clicked="OnSignClicked" />
             <Button Grid.Row="4" Grid.Column="1" Text="0" Style="{StaticResource DigitKey}" Clicked="OnDigitClicked" />
             <Button Grid.Row="4" Grid.Column="2" Text="," Style="{StaticResource DigitKey}" Clicked="OnDecimalClicked" />
-            <Button Grid.Row="4" Grid.Column="3" Text="=" Style="{StaticResource OperatorKey}" Clicked="OnEqualsClicked" />
+            <Button Grid.Row="4" Grid.Column="3" Text="=" Style="{StaticResource EqualsKey}" Clicked="OnEqualsClicked" />
         </Grid>
     </Grid>
 </ContentPage>

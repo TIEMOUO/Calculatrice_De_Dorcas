@@ -249,9 +249,9 @@ public partial class MainPage : ContentPage
 
         ResultLabel.Text = message;
         ResultLabel.FontSize = 26;
-        ResultLabel.TextColor = Color.FromArgb("#FF453A");
+        ResultLabel.TextColor = Color.FromArgb("#FF5C7A");
         StatusLabel.Text = "● Erreur";
-        StatusLabel.TextColor = Color.FromArgb("#FF453A");
+        StatusLabel.TextColor = Color.FromArgb("#FF5C7A");
     }
 
     private void ResetAll()
@@ -283,13 +283,13 @@ public partial class MainPage : ContentPage
         {
             string text = _input.Replace('.', ',');
             ResultLabel.Text = text;
-            ResultLabel.TextColor = Colors.White;
+            ResultLabel.TextColor = Color.FromArgb("#FFF4E0");
             StatusLabel.Text = "● Prêt";
-            StatusLabel.TextColor = Color.FromArgb("#30D158");
+            StatusLabel.TextColor = Color.FromArgb("#7CFFD8");
 
             // Réduction progressive de la police pour les longs nombres
             int len = text.Length;
-            ResultLabel.FontSize = len <= 8 ? 56 : len <= 11 ? 44 : len <= 14 ? 34 : 28;
+            ResultLabel.FontSize = len <= 8 ? 58 : len <= 11 ? 46 : len <= 14 ? 36 : 30;
         }
 
         // Les ScrollView horizontaux se calent sur la fin du texte

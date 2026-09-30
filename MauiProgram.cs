@@ -32,6 +32,8 @@ namespace Calculatrice_De_Dorcas
                 })
                 .ConfigureFonts(fonts =>
                 {
+                    fonts.AddFont("Pacifico-Regular.ttf", "Pacifico");
+                    fonts.AddFont("Lobster-Regular.ttf", "Lobster");
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddFont("SegoeUI-Semibold.ttf", "SegoeSemibold");
